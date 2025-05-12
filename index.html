@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RANKING GRACZY SERWERA PSYCHOPACI</title>
+  <!-- Import czcionek: Montserrat (główna) oraz Roboto Mono (dla cyfr) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <!-- Font Awesome dla ikon (jeśli chcesz też korzystać z ikon FA) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Ogólne ustawienia – Montserrat jako główna czcionka */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(45deg, #141E30, #243B55);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://source.unsplash.com/1600x900/?dark,abstract') center/cover no-repeat;
+      opacity: 0.15;
+      z-index: -1;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    /* Nagłówek – wyróżniony glow i dekoracja */
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px #FFD700;
+      animation: glow 2s infinite alternate;
+      position: relative;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #FFD700; }
+      to { text-shadow: 0 0 20px #FF4500, 0 0 30px #FF4500; }
+    }
+    h1::after {
+      content: "";
+      display: block;
+      width: 60%;
+      height: 3px;
+      background: linear-gradient(to right, #FFD700, #FF4500);
+      margin: 15px auto 0 auto;
+      border-radius: 3px;
+    }
+    
+    /* Przycisk DISCORD – przekierowuje do zaproszenia w tym samym oknie */
+    .discord-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #7289DA;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      z-index: 2000;
+      text-transform: uppercase;
+    }
+    .discord-button:hover {
+      background-color: #5b6eae;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #fff;
+    }
+    
+    /* Tabela rankingowa */
+    table.ranking-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: box-shadow 0.3s;
+    }
+    table.ranking-table:hover {
+      box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+    table.ranking-table th,
+    table.ranking-table td {
+      padding: 15px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.3);
+      font-size: 1.4rem;
+    }
+    table.ranking-table th {
+      background: rgba(0,0,0,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .wins {
+      font-family: 'Roboto Mono', monospace;
+    }
+    
+    /* Podstawowy styl dla nicków – biały, przy hover efekt złoty */
+    .player-name {
+      color: #fff;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .player-name:hover {
+      color: #FFD700;
+      text-shadow: 0 0 12px #FFD700;
+    }
+    
+    /* Animacja neon dla większości nicków */
+    @keyframes multiNeon {
+      0% { text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #0ff; }
+      50% { text-shadow: 0 0 15px #0ff, 0 0 25px #ff0, 0 0 35px #f0f; }
+      100% { text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 15px #0ff; }
+    }
+    .neon-nick {
+      animation: multiNeon 3s ease-in-out infinite;
+    }
+    
+    /* Kod efektu shine dla nick "Karo" – Twoja wersja, ale z font-size: inherit oraz usunięciem box-shadow */
+    .shine-nick {
+      display: inline-block;
+      font-weight: bold;
+      font-size: inherit; /* zamiast 1.2em */
+      color: #ff1a1a;
+      position: relative;
+      padding: 2px 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #2a0000 0%, #ff1a1a 35%, #ff4d4d 50%, #ff1a1a 65%, #2a0000 100%);
+      background-size: 200% 100%;
+      background-position: 100% 0;
+      overflow: hidden;
+      animation: shine 2.5s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @keyframes shine {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+    /* Gwiazdka – podniesiona, font-size: inherit dla wyrównania */
+    .shiny-nick .star {
+      color: #ff1a1a;
+      text-shadow: 0 0 6px #ff1a1a, 0 0 12px #ff4d4d;
+      font-size: inherit; /* zamiast 1.1em */
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    
+    /* Przykładowa klasa "rainbow-nick" została pozostawiona – ale teraz Aurelia używa shiny-nick */
+    /* Specjalne klasy dla miejsc */
+    .first {
+      background: rgba(255,215,0,0.3);
+      font-weight: bold;
+    }
+    .second {
+      background: rgba(192,192,192,0.3);
+      font-weight: bold;
+    }
+    .third {
+      background: rgba(205,127,50,0.3);
+      font-weight: bold;
+    }
+    
+    /* Przycisk KLIKNIJ SŁODZIAKU – efekt pulsacji */
+    .sweet-button {
+      display: block;
+      margin: 30px auto;
+      background: linear-gradient(45deg, #FF69B4, #FFD700);
+      border: none;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+      animation: pulsate 3s infinite;
+      transition: transform 0.3s;
+    }
+    .sweet-button:hover {
+      transform: scale(1.05);
+    }
+    @keyframes pulsate {
+      0% { background: linear-gradient(45deg, #FF69B4, #FFD700); }
+      50% { background: linear-gradient(45deg, #FFD700, #FF69B4); }
+      100% { background: linear-gradient(45deg, #FF69B4, #FFD700); }
+    }
+    
+    @media (max-width: 600px) {
+      table.ranking-table th,
+      table.ranking-table td {
+        padding: 10px;
+        font-size: 1.1rem;
+      }
+      h1 { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Przycisk DISCORD -->
+  <button class="discord-button" onclick="window.location.href='https://discord.com/invite/psychopaci'">DISCORD</button>
+  
+  <div class="container">
+    <h1>RANKING GRACZY SERWERA PSYCHOPACI</h1>
+    
+    <!-- Tabela rankingowa -->
+    <table class="ranking-table">
+      <thead>
+        <tr>
+          <th>MIEJSCE</th>
+          <th>GRACZ</th>
+          <th>WYGRANE JAKO IMPO</th>
+          <th>WYGRANE JAKO NEUT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Wiersz 1: Karo -->
+        <tr class="first">
+          <td>1</td>
+          <td class="player-name">
+            <span class="shine-nick">
+              <i class="fas fa-crown" style="color: #ff2222; margin-right: 5px; vertical-align: middle;"></i>
+              Karo
+            </span>
+          </td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <!-- Wiersz 2: Aurelia -->
+        <tr class="second">
+          <td>2</td>
+          <td class="player-name">
+            <span class="shiny-nick">
+              <span class="star">&#9733;</span> Aurelia
+            </span>
+          </td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <!-- Wiersz 3: Pacia -->
+        <tr class="third">
+          <td>3</td>
+          <td class="player-name"><span class="neon-nick">Pacia</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <!-- Kolejne wiersze (4-30) – przykładowe dane z klasą neon-nick -->
+        <tr>
+          <td>4</td>
+          <td class="player-name"><span class="neon-nick">ADM</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td class="player-name"><span class="neon-nick">ma1ked</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td class="player-name"><span class="neon-nick">micheleD95</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td class="player-name"><span class="neon-nick">luki290</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td class="player-name"><span class="neon-nick">Estiment</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td class="player-name"><span class="neon-nick">natalka</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td class="player-name"><span class="neon-nick">FSmesdek</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td class="player-name"><span class="neon-nick">NatalQs</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td class="player-name"><span class="neon-nick">Electro</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td class="player-name"><span class="neon-nick">Zwierzak</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td class="player-name"><span class="neon-nick">Nokim0</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td class="player-name"><span class="neon-nick">notpeatryk</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td class="player-name"><span class="neon-nick">Nerwus</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td class="player-name"><span class="neon-nick">Prryre</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td class="player-name"><span class="neon-nick">Wj55otek</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td class="player-name"><span class="neon-nick">Jasiu</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td class="player-name"><span class="neon-nick">Mr.Chrzan</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td class="player-name"><span class="neon-nick">Szymek</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td class="player-name"><span class="neon-nick">Narcysta</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td class="player-name"><span class="neon-nick">Diablica</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td class="player-name"><span class="neon-nick">gornix</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td class="player-name"><span class="neon-nick">Termi</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td class="player-name"><span class="neon-nick">Kociak</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td class="player-name"><span class="neon-nick">Lisio</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td class="player-name"><span class="neon-nick">Zbyszek</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td class="player-name"><span class="neon-nick">Bobofrucik</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td class="player-name"><span class="neon-nick">Hozol</span></td>
+          <td class="wins">0</td>
+          <td class="wins">0</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Przycisk KLIKNIJ SŁODZIAKU -->
+    <button class="sweet-button" onclick="openSweetGif()">KLIKNIJ SŁODZIAKU</button>
+    
+  </div>
+  
+  <script>
+    function openSweetGif() {
+      window.open("https://c.tenor.com/6oVpxIFwAAoAAAAd/tenor.gif", "_blank");
+    }
+  </script>
+</body>
+</html>
